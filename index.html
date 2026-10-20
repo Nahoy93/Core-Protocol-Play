@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="sv">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Core Protocol</title>
+    <meta name="claude:viewport-fit-sides" content="cover" />
+    <meta name="description" content="Core Protocol – sci-fi tower defense i webbläsaren. Fas 2: spela samma match med vänner över internet." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@400;500;600&family=Chakra+Petch:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    />
+    <script type="module" crossorigin src="./assets/index-Di5FFLWY.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-Du7EBL6-.css">
+  </head>
+  <body>
+    <div id="app">
+      <canvas id="scene" aria-label="Spelplanen Testbanan i 3D"></canvas>
+      <canvas id="overlay" aria-hidden="true"></canvas>
+
+      <div class="hud" id="hud">
+        <header class="hud-top">
+          <div class="brand">
+            <span class="brand-name">Core Protocol</span>
+            <span class="brand-sub">Testbanan · Fas 2</span>
+          </div>
+          <button type="button" class="btn btn-menu" id="btn-menu" aria-expanded="false" aria-controls="panels">Meny</button>
+
+          <div class="status" id="status">
+            <div class="stat stat-core" data-level="ok" id="stat-core">
+              <span class="stat-label">Kärnan</span>
+              <span class="stat-value"><span id="core-value">100</span><span class="stat-max">/100</span></span>
+              <span class="meter" aria-hidden="true"><span class="meter-fill" id="core-meter"></span></span>
+            </div>
+            <div class="stat stat-scrap" id="stat-scrap">
+              <span class="stat-label">Skrot</span>
+              <span class="stat-value" id="scrap-value">600</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Våg</span>
+              <span class="stat-value"><span id="wave-value">0</span><span class="stat-max" id="wave-max">/15</span></span>
+            </div>
+            <div class="stat">
+              <span class="stat-label" id="next-label">Första vågen</span>
+              <span class="stat-value" id="next-wave">0:30</span>
+            </div>
+            <div class="stat stat-robots">
+              <span class="stat-label">På banan</span>
+              <span class="stat-value" id="robots-value">0</span>
+            </div>
+            <div class="stat stat-mode" id="mode-badge" data-state="ok" hidden>
+              <span class="stat-label">Online</span>
+              <span class="stat-value stat-value-small" id="mode-value">–</span>
+            </div>
+          </div>
+        </header>
+
+        <div class="hud-main">
+          <div class="radio" id="radio" hidden aria-live="polite">
+            <span class="radio-from" id="radio-from">AXIOM</span>
+            <span class="radio-text" id="radio-text"></span>
+          </div>
+
+          <aside class="hud-side" aria-label="Paneler">
+            <section class="panel tower-panel" id="tower-panel" hidden aria-label="Torn"></section>
+
+            <div class="hud-panels" id="panels">
+              <details class="panel" id="panel-net">
+                <summary>Spela online</summary>
+                <div class="panel-body" id="net-body"></div>
+              </details>
+
+              <details class="panel" id="panel-dev">
+                <summary>Utvecklarmeny</summary>
+                <div class="panel-body">
+                  <div class="btn-row">
+                    <button type="button" id="btn-scrap" class="btn">Ge 500 skrot</button>
+                    <button type="button" id="btn-damage" class="btn" aria-pressed="false">Visa skadetal</button>
+                  </div>
+                  <div class="btn-group" role="group" aria-labelledby="spawn-label">
+                    <span class="group-label" id="spawn-label">Skicka en robot</span>
+                    <div class="btn-row" id="spawn-buttons"></div>
+                  </div>
+                  <div class="btn-row">
+                    <button type="button" id="btn-pause" class="btn" aria-pressed="false"><span id="btn-pause-label">Paus</span> <kbd>P</kbd></button>
+                    <button type="button" id="btn-speed" class="btn" aria-pressed="false"><span id="btn-speed-label">Hastighet 1×</span> <kbd>F</kbd></button>
+                    <button type="button" id="btn-restart" class="btn">Starta om</button>
+                  </div>
+                  <div class="btn-row">
+                    <button type="button" id="btn-replay" class="btn" disabled>Se senaste repris</button>
+                  </div>
+                  <p class="note">Allt här går via kommandon, precis som tornen, så det kommer med i reprisen.</p>
+                  <p class="note note-lock" id="dev-lock" hidden></p>
+                </div>
+              </details>
+
+              <details class="panel" id="panel-sim">
+                <summary>Simulering</summary>
+                <div class="panel-body">
+                  <dl class="readout">
+                    <div><dt>Tick</dt><dd id="sim-tick">0</dd></div>
+                    <div><dt>Speltid</dt><dd id="sim-time">0:00</dd></div>
+                    <div><dt>Checksumma</dt><dd class="mono" id="sim-sum">–</dd></div>
+                    <div><dt>Förstörda</dt><dd id="sim-killed">0</dd></div>
+                    <div><dt>Släppta in</dt><dd id="sim-leaked">0</dd></div>
+                    <div><dt>Bildfrekvens</dt><dd id="sim-fps">–</dd></div>
+                  </dl>
+                  <div class="selftest" id="selftest" data-state="running">
+                    <span class="pill" id="selftest-pill">Kör</span>
+                    <span class="selftest-text" id="selftest-text">Determinismtestet körs …</span>
+                  </div>
+                </div>
+              </details>
+            </div>
+          </aside>
+        </div>
+
+        <div class="hud-bottom">
+          <p class="toast" id="toast" role="status" hidden></p>
+          <p class="hint" id="hint"></p>
+          <div class="replay-bar" id="replay-bar" hidden>
+            <span class="replay-tag">Repris</span>
+            <span class="replay-time" id="replay-time">0:00 / 0:00</span>
+            <span class="replay-track" aria-hidden="true"><span class="replay-fill" id="replay-fill"></span></span>
+            <button type="button" class="btn" id="replay-pause" aria-pressed="false">Paus</button>
+            <span class="btn-group-inline" role="group" aria-label="Hastighet" id="replay-speeds"></span>
+            <button type="button" class="btn" id="replay-exit">Avsluta</button>
+            <span class="replay-check" id="replay-check" hidden></span>
+          </div>
+          <nav class="build-bar" id="build-bar" aria-label="Torn och vågor"></nav>
+        </div>
+      </div>
+
+      <div class="overlay" id="endscreen" hidden>
+        <div class="overlay-card" id="end-card" role="dialog" aria-modal="true" aria-labelledby="end-title" data-result="lost">
+          <p class="overlay-eyebrow" id="end-eyebrow">AXIOM</p>
+          <h2 id="end-title">Kärnan föll</h2>
+          <p class="overlay-text" id="end-text"></p>
+          <dl class="end-stats" id="end-stats"></dl>
+          <div class="btn-row">
+            <button type="button" id="btn-again" class="btn btn-primary">Spela igen</button>
+            <button type="button" id="btn-watch" class="btn">Se repris</button>
+            <button type="button" id="btn-end-close" class="btn" hidden>Stäng</button>
+          </div>
+          <p class="note" id="end-note"></p>
+        </div>
+      </div>
+
+      <div class="overlay" id="lobby" hidden></div>
+
+      <div class="fallback" id="fallback" hidden>
+        <h2>3D-grafiken kunde inte starta</h2>
+        <p>Webbläsaren gav inte spelet tillgång till WebGL. Prova en annan webbläsare, eller slå på hårdvaruacceleration i inställningarna.</p>
+      </div>
+
+      <noscript><p class="fallback">Spelet behöver JavaScript för att köras.</p></noscript>
+    </div>
+  </body>
+</html>

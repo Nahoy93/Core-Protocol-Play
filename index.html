@@ -5,44 +5,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Core Protocol</title>
     <meta name="claude:viewport-fit-sides" content="cover" />
-    <meta name="description" content="Core Protocol – sci-fi tower defense i webbläsaren. Fas 2: spela samma match med vänner över internet." />
+    <meta name="description" content="Core Protocol – sci-fi tower defense i webbläsaren. Fas 3: försvara Kärnan tillsammans, med en korridor var på kartor för upp till fyra spelare." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@400;500;600&family=Chakra+Petch:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
     />
-    <script type="module" crossorigin src="./assets/index-Di5FFLWY.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-Du7EBL6-.css">
+    <script type="module" crossorigin src="./assets/index-DOrpl5u5.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-B2AAuOZ1.css">
   </head>
   <body>
     <div id="app">
-      <canvas id="scene" aria-label="Spelplanen Testbanan i 3D"></canvas>
+      <canvas id="scene" aria-label="Spelplanen i 3D"></canvas>
       <canvas id="overlay" aria-hidden="true"></canvas>
 
       <div class="hud" id="hud">
         <header class="hud-top">
           <div class="brand">
             <span class="brand-name">Core Protocol</span>
-            <span class="brand-sub">Testbanan · Fas 2</span>
+            <span class="brand-sub" id="brand-sub">Testbanan · Fas 3</span>
           </div>
           <button type="button" class="btn btn-menu" id="btn-menu" aria-expanded="false" aria-controls="panels">Meny</button>
 
           <div class="status" id="status">
             <div class="stat stat-core" data-level="ok" id="stat-core">
               <span class="stat-label">Kärnan</span>
-              <span class="stat-value"><span id="core-value">100</span><span class="stat-max">/100</span></span>
+              <span class="stat-value"><span id="core-value">100</span><span class="stat-max" id="core-max">/100</span></span>
               <span class="meter" aria-hidden="true"><span class="meter-fill" id="core-meter"></span></span>
             </div>
             <div class="stat stat-scrap" id="stat-scrap">
               <span class="stat-label">Skrot</span>
               <span class="stat-value" id="scrap-value">600</span>
             </div>
+            <div class="stat stat-energy" id="stat-energy" data-state="charging" title="Nätenergi laddas när robotar förstörs och driver lagförmågorna.">
+              <span class="stat-label">Nätenergi</span>
+              <span class="stat-value"><span id="energy-value">0</span><span class="stat-max">/100</span></span>
+              <span class="meter" aria-hidden="true"><span class="meter-fill" id="energy-meter"></span></span>
+            </div>
             <div class="stat">
               <span class="stat-label">Våg</span>
               <span class="stat-value"><span id="wave-value">0</span><span class="stat-max" id="wave-max">/15</span></span>
             </div>
-            <div class="stat">
+            <div class="stat stat-next">
               <span class="stat-label" id="next-label">Första vågen</span>
               <span class="stat-value" id="next-wave">0:30</span>
             </div>
@@ -62,11 +67,24 @@
             <span class="radio-from" id="radio-from">AXIOM</span>
             <span class="radio-text" id="radio-text"></span>
           </div>
+          <div class="proposal" id="proposal" hidden role="alert"></div>
+          <div class="paused" id="paused" hidden role="status">
+            <span class="paused-title">Pausat</span>
+            <span class="paused-text" id="paused-text"></span>
+          </div>
+          <ol class="chat" id="chat" aria-live="polite" aria-label="Lagchatt"></ol>
 
           <aside class="hud-side" aria-label="Paneler">
             <section class="panel tower-panel" id="tower-panel" hidden aria-label="Torn"></section>
 
             <div class="hud-panels" id="panels">
+              <section class="panel team-panel" id="team-panel" hidden aria-label="Laget"></section>
+
+              <details class="panel" id="panel-match" open>
+                <summary>Ny match</summary>
+                <div class="panel-body" id="match-body"></div>
+              </details>
+
               <details class="panel" id="panel-net">
                 <summary>Spela online</summary>
                 <div class="panel-body" id="net-body"></div>
@@ -77,6 +95,7 @@
                 <div class="panel-body">
                   <div class="btn-row">
                     <button type="button" id="btn-scrap" class="btn">Ge 500 skrot</button>
+                    <button type="button" id="btn-energy" class="btn">Ge 50 nätenergi</button>
                     <button type="button" id="btn-damage" class="btn" aria-pressed="false">Visa skadetal</button>
                   </div>
                   <div class="btn-group" role="group" aria-labelledby="spawn-label">
@@ -90,6 +109,7 @@
                   </div>
                   <div class="btn-row">
                     <button type="button" id="btn-replay" class="btn" disabled>Se senaste repris</button>
+                    <button type="button" id="btn-editor" class="btn">Kartverktyget</button>
                   </div>
                   <p class="note">Allt här går via kommandon, precis som tornen, så det kommer med i reprisen.</p>
                   <p class="note note-lock" id="dev-lock" hidden></p>
@@ -129,7 +149,21 @@
             <button type="button" class="btn" id="replay-exit">Avsluta</button>
             <span class="replay-check" id="replay-check" hidden></span>
           </div>
-          <nav class="build-bar" id="build-bar" aria-label="Torn och vågor"></nav>
+          <div class="bottom-row">
+            <section class="ability-bar" id="ability-bar" aria-label="Lagförmågor"></section>
+            <nav class="build-bar" id="build-bar" aria-label="Torn och vågor"></nav>
+            <div class="comms" id="comms" hidden>
+              <div class="comms-votes" id="comms-votes" role="group" aria-label="Rösta om paus och fart">
+                <button type="button" class="btn" id="btn-vote-pause" aria-pressed="false">Paus <span class="vote-count" id="vote-pause-count"></span> <kbd>P</kbd></button>
+                <button type="button" class="btn" id="btn-vote-fast" aria-pressed="false">2× <span class="vote-count" id="vote-fast-count"></span> <kbd>F</kbd></button>
+              </div>
+              <button type="button" class="btn" id="btn-ping" title="Håll G och dra mot en ping. Släpp för att markera platsen.">Pinga <kbd>G</kbd></button>
+              <details class="quick-chat-menu" id="quick-chat-menu">
+                <summary class="btn">Snabbchatt</summary>
+                <div class="quick-chat" id="quick-chat"></div>
+              </details>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -139,6 +173,7 @@
           <h2 id="end-title">Kärnan föll</h2>
           <p class="overlay-text" id="end-text"></p>
           <dl class="end-stats" id="end-stats"></dl>
+          <div class="end-setup" id="end-setup" hidden></div>
           <div class="btn-row">
             <button type="button" id="btn-again" class="btn btn-primary">Spela igen</button>
             <button type="button" id="btn-watch" class="btn">Se repris</button>
@@ -149,6 +184,8 @@
       </div>
 
       <div class="overlay" id="lobby" hidden></div>
+
+      <div class="editor" id="editor" hidden role="dialog" aria-modal="true" aria-label="Kartverktyget"></div>
 
       <div class="fallback" id="fallback" hidden>
         <h2>3D-grafiken kunde inte starta</h2>

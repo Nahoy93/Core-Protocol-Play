@@ -4,6 +4,16 @@ Ett sci-fi tower defense i webbläsaren. AXIOM:s robotar marscherar mot Kärnan,
 
 **Spela direkt:** https://nahoy93.github.io/Core-Protocol-Play/
 
+## Nytt i fas 5a: fyra torn, specialiseringar och nya robotar
+
+- **Hackernod** kapar en robot några sekunder: den vänder och slår mot sina egna.
+- **Gravitationsbrunn** drar ihop robotarna och saktar ner dem framför dina mortlar.
+- **Skrotsmedja** ger skrot vid varje vågstart men försvarar inte.
+- **Orbitallänk** laddar en laser som du själv avfyrar med **L** – sikta lite framför robotarna.
+- **Nivå 4:** varje torn kan bli en av två specialiseringar. Välj med **U** eller **I** när tornet är på nivå 3.
+- **Störsändare** stänger av dina torn en stund, och **Fasskiftare** blinkar förbi dem. En EMP-mast och en Gravitationsbrunn hjälper.
+- **Välj sex torn** även när du spelar ensam eller co-op. I co-op-lobbyn ser ni varandras val.
+
 ## Versus: utmana en vän eller AI:n
 
 1. Välj **Versus** under **Ny match** och välj dina sex torn.
@@ -34,4 +44,4 @@ Klicka **Rita egen karta** under **Ny match**. Klicka ut korridorens svängar in
 
 Här ligger bara den färdigbyggda webbversionen, som GitHub Pages visar på länken ovan. Källkoden finns i ett privat repo och byggs om hit när en ny fas är klar.
 
-Nuvarande version: **fas 4 – versus**.
+Nuvarande version: **fas 5a – nya torn och robotar**.

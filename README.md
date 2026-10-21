@@ -1,10 +1,17 @@
 # Core Protocol – spela
 
-Ett sci-fi tower defense i webbläsaren. AXIOM:s robotar marscherar mot Kärnan, och du försvarar den – ensam eller tillsammans med upp till tre vänner.
+Ett sci-fi tower defense i webbläsaren. AXIOM:s robotar marscherar mot Kärnan, och du försvarar den – ensam, tillsammans med upp till tre vänner eller i versus mot en vän eller AI:n.
 
 **Spela direkt:** https://nahoy93.github.io/Core-Protocol-Play/
 
-## Spela med vänner
+## Versus: utmana en vän eller AI:n
+
+1. Välj **Versus** under **Ny match** och välj dina sex torn.
+2. Klicka **Starta mot AI:n** (Lätt, Normal eller Svår) – eller **Utmana en vän** och skicka länken. Din vän väljer sina torn och trycker **Redo**, och ni ser varandras val först när matchen startar.
+3. Försvara din egen Kärna på din sida av Spegeln och köp robotar i **Fabriken**. De skickas till motståndaren när nästa våg startar, och varje köp höjer din inkomst. Efter våg 20 börjar Överhettningen, och den vars Kärna håller längst vinner.
+4. Efter matchen startar **Revansch** en ny match med samma motståndare.
+
+## Spela co-op med vänner
 
 1. Öppna länken ovan, skriv ditt namn under **Spela online** och klicka **Skapa match**.
 2. Välj karta och svårighet i lobbyn: Rostdalen (2 korridorer), Kylverket (3) eller Korsningen (4).
@@ -27,4 +34,4 @@ Klicka **Rita egen karta** under **Ny match**. Klicka ut korridorens svängar in
 
 Här ligger bara den färdigbyggda webbversionen, som GitHub Pages visar på länken ovan. Källkoden finns i ett privat repo och byggs om hit när en ny fas är klar.
 
-Nuvarande version: **fas 3 – co-op**.
+Nuvarande version: **fas 4 – versus**.

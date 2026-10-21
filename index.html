@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Core Protocol</title>
     <meta name="claude:viewport-fit-sides" content="cover" />
-    <meta name="description" content="Core Protocol – sci-fi tower defense i webbläsaren. Fas 3: försvara Kärnan tillsammans, med en korridor var på kartor för upp till fyra spelare." />
+    <meta name="description" content="Core Protocol – sci-fi tower defense i webbläsaren. Försvara Kärnan tillsammans med upp till tre vänner, eller möt en vän eller AI:n i versus." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@400;500;600&family=Chakra+Petch:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
     />
-    <script type="module" crossorigin src="./assets/index-DOrpl5u5.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-B2AAuOZ1.css">
+    <script type="module" crossorigin src="./assets/index-DRmydiMa.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-D8YnP87I.css">
   </head>
   <body>
     <div id="app">
@@ -24,19 +24,28 @@
         <header class="hud-top">
           <div class="brand">
             <span class="brand-name">Core Protocol</span>
-            <span class="brand-sub" id="brand-sub">Testbanan · Fas 3</span>
+            <span class="brand-sub" id="brand-sub">Testbanan · Fas 4</span>
           </div>
           <button type="button" class="btn btn-menu" id="btn-menu" aria-expanded="false" aria-controls="panels">Meny</button>
 
           <div class="status" id="status">
             <div class="stat stat-core" data-level="ok" id="stat-core">
-              <span class="stat-label">Kärnan</span>
+              <span class="stat-label" id="core-label">Kärnan</span>
               <span class="stat-value"><span id="core-value">100</span><span class="stat-max" id="core-max">/100</span></span>
               <span class="meter" aria-hidden="true"><span class="meter-fill" id="core-meter"></span></span>
+            </div>
+            <div class="stat stat-core stat-enemy" data-level="ok" id="stat-enemy" hidden>
+              <span class="stat-label" id="enemy-label">Motståndaren</span>
+              <span class="stat-value"><span id="enemy-value">50</span><span class="stat-max" id="enemy-max">/50</span></span>
+              <span class="meter" aria-hidden="true"><span class="meter-fill" id="enemy-meter"></span></span>
             </div>
             <div class="stat stat-scrap" id="stat-scrap">
               <span class="stat-label">Skrot</span>
               <span class="stat-value" id="scrap-value">600</span>
+            </div>
+            <div class="stat stat-income" id="stat-income" hidden title="Betalas ut vid varje vågstart. Varje robot du skickar höjer den.">
+              <span class="stat-label">Inkomst</span>
+              <span class="stat-value" id="income-value">+50</span>
             </div>
             <div class="stat stat-energy" id="stat-energy" data-state="charging" title="Nätenergi laddas när robotar förstörs och driver lagförmågorna.">
               <span class="stat-label">Nätenergi</span>
@@ -46,6 +55,7 @@
             <div class="stat">
               <span class="stat-label">Våg</span>
               <span class="stat-value"><span id="wave-value">0</span><span class="stat-max" id="wave-max">/15</span></span>
+              <span class="stat-heat" id="wave-heat" hidden></span>
             </div>
             <div class="stat stat-next">
               <span class="stat-label" id="next-label">Första vågen</span>
@@ -68,6 +78,7 @@
             <span class="radio-text" id="radio-text"></span>
           </div>
           <div class="proposal" id="proposal" hidden role="alert"></div>
+          <div class="incoming" id="incoming" hidden role="alert"></div>
           <div class="paused" id="paused" hidden role="status">
             <span class="paused-title">Pausat</span>
             <span class="paused-text" id="paused-text"></span>
@@ -75,6 +86,9 @@
           <ol class="chat" id="chat" aria-live="polite" aria-label="Lagchatt"></ol>
 
           <aside class="hud-side" aria-label="Paneler">
+            <div class="minimap" id="minimap" hidden title="Klicka för att se motståndarens sida i stort">
+              <span class="minimap-label" id="minimap-label">Motståndaren</span>
+            </div>
             <section class="panel tower-panel" id="tower-panel" hidden aria-label="Torn"></section>
 
             <div class="hud-panels" id="panels">
@@ -151,6 +165,7 @@
           </div>
           <div class="bottom-row">
             <section class="ability-bar" id="ability-bar" aria-label="Lagförmågor"></section>
+            <section class="factory" id="factory" aria-label="Fabriken" hidden></section>
             <nav class="build-bar" id="build-bar" aria-label="Torn och vågor"></nav>
             <div class="comms" id="comms" hidden>
               <div class="comms-votes" id="comms-votes" role="group" aria-label="Rösta om paus och fart">
